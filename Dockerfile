@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get install -y wget unzip
 
 # Defina o diretório de trabalho
-WORKDIR /app
+WORKDIR /gerenciador-tarefas
 
 # Copie o arquivo pom.xml e instale as dependências
 COPY pom.xml .
@@ -27,10 +27,10 @@ FROM openjdk:17-jdk-slim
 EXPOSE 8080
 
 # Defina o diretório de trabalho
-WORKDIR /app
+WORKDIR /gerenciador-tarefas
 
 # Copie o JAR do build stage para o diretório de trabalho
-COPY --from=build /app/target/gerenciador-tarefas-0.0.1-SNAPSHOT.jar /app/
+COPY --from=build /gerenciador-tarefas/target/gerenciador-tarefas-0.0.1-SNAPSHOT.jar /gerenciador-tarefas/
 
 # Comando para executar o aplicativo quando o contêiner inicia
 ENTRYPOINT ["java", "-jar", "gerenciador-tarefas-0.0.1-SNAPSHOT.jar"]
