@@ -6,14 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.engine.internal.Cascade;
+
+import java.util.Set;
 
 @Entity
-@Table(name = "tb_user")
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "tb_user")
 public class User {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -37,4 +38,8 @@ public class User {
     @JsonProperty
     @Column(name="ds_sexo", nullable = false)
     private String sexo;
+    @JsonProperty("documentos")
+    @Column(name = "avaliacaoProduto")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Documento> documentos;
 }

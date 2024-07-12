@@ -1,5 +1,7 @@
 package com.adm.gerenciador_tarefas.controller.User;
 
+import com.adm.gerenciador_tarefas.dto.Documento.DocPostDto;
+import com.adm.gerenciador_tarefas.service.User.UserAdicionarDocumentoService;
 import com.adm.gerenciador_tarefas.service.User.UserCrudService;
 import com.adm.gerenciador_tarefas.dto.User.UserPostDto;
 import com.adm.gerenciador_tarefas.model.User;
@@ -17,6 +19,9 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserCrudService userCrudService;
+
+    @Autowired
+    private UserAdicionarDocumentoService userAdicionarDocumentoService;
 
     @GetMapping
     public ResponseEntity<List<User>> findAll() {
@@ -46,6 +51,14 @@ public class UserController {
         this.userCrudService.userDeleteById(id, codigoAcesso);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
+
+    @PatchMapping("/add-doc")
+    public ResponseEntity<?> addDoc(@RequestParam String email, @RequestBody @Valid DocPostDto docPostDto) {
+        userAdicionarDocumentoService.adicionardoc(email, docPostDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
                 .body("");
     }
 }

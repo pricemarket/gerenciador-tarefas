@@ -4,5 +4,5 @@ import com.adm.gerenciador_tarefas.dto.auth.LoginDto;
 
 @FunctionalInterface
 public interface UserLoginService {
-    boolean authenticate(LoginDto loginDto);
+    String authenticate(LoginDto loginDto);
 }

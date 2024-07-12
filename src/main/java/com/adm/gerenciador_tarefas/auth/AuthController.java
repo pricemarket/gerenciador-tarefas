@@ -15,11 +15,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        boolean token = userService.authenticate(loginDto);
-        if (token) {
+        String token = userService.authenticate(loginDto);
+        if (token != null) {
             return ResponseEntity.ok(token);
         } else {
-            return ResponseEntity.status(401).body("Invalid email or password");
+            return ResponseEntity.status(401).body("Email ou Senha inválido!");
         }
     }
 }

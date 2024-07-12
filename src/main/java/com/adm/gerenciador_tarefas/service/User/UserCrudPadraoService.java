@@ -20,6 +20,7 @@ public class UserCrudPadraoService implements UserCrudService {
 
     @Autowired
     private ValidaChaveAcessoService validaChaveAcessoService;
+
     private ModelMapper modelMapper = new ModelMapper();
     @Override
     public User userCreateService(UserPostDto userDTO) {

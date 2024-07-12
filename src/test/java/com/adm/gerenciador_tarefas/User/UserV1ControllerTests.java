@@ -1,11 +1,13 @@
 package com.adm.gerenciador_tarefas.User;
 
+import com.adm.gerenciador_tarefas.dto.Documento.DocPostDto;
 import com.adm.gerenciador_tarefas.dto.User.UserPostDto;
 import com.adm.gerenciador_tarefas.model.*;
 import com.adm.gerenciador_tarefas.repository.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,5 +187,54 @@ public class UserV1ControllerTests {
             assertEquals(1, userRepository.findAll().size());
         }
 
+    }
+
+    @Nested
+    class AdicionandoDoc {
+        @Autowired
+        UserRepository userRepository;
+        UserPostDto userPostDto;
+        private User user;
+        @BeforeEach
+        void setup() {
+            objectMapper.registerModule(new JavaTimeModule());
+            userPostDto = UserPostDto.builder()
+                    .chaveDeAcesso("2@3456")
+                    .email("@s")
+                    .name("pablo")
+                    .cpf("3244222434")
+                    .sexo("Masculino")
+                    .profissao("Professor")
+                    .build();
+            user = userRepository.save(modelMapper.map(userPostDto, User.class));
+        }
+
+        @AfterEach
+        void tearDown() {
+            userRepository.deleteAll();
+        }
+
+        @Test
+        @DisplayName("Adicionando documento ao usuário")
+        void testeAoAdicionarDocumentoAoUsuario() throws Exception {
+            // Arrange
+
+            DocPostDto docPostDto = DocPostDto.builder()
+                    .nomedoc("controle academico")
+                    .link("https://www.google.com.br/")
+                    .build();
+            // nenhuma necessidade além do setup()
+            // Act
+            String responseJSONString = driver.perform(patch(URI_USUARIO + "/add-doc")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .param("email", user.getEmail())
+                            .content(objectMapper.writeValueAsString(docPostDto)))
+                    .andExpect(status().isOk())
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+            // Assert
+            System.out.println(user.getID());
+            System.out.println(userRepository.findById(1L).get());
+        }
     }
 }

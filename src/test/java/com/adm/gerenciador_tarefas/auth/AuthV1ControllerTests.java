@@ -99,7 +99,7 @@ public class AuthV1ControllerTests {
                     .andReturn().getResponse().getContentAsString();
 
             // Assert
-            assertTrue(true, responseJSONString);
+            System.out.println(responseJSONString);
         }
 
     }
