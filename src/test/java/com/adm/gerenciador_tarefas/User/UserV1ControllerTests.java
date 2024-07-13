@@ -193,6 +193,9 @@ public class UserV1ControllerTests {
     class AdicionandoDoc {
         @Autowired
         UserRepository userRepository;
+        @Autowired
+        DocumentoRepository documentoRepository;
+
         UserPostDto userPostDto;
         private User user;
         @BeforeEach
@@ -235,6 +238,43 @@ public class UserV1ControllerTests {
             // Assert
             System.out.println(user.getID());
             System.out.println(userRepository.findById(1L).get());
+        }
+
+        @Test
+        @DisplayName("Quando busco todos os documentos do usuário salvo")
+        @Transactional
+        void testAoBuscarTodosDocumentos() throws Exception {
+            //Arrange
+            DocPostDto docPostDto = DocPostDto.builder()
+                    .nomedoc("controle academico")
+                    .link("https://www.google.com.br/")
+                    .build();
+            Documento doc = modelMapper.map(docPostDto, Documento.class);
+            Documento documento = documentoRepository.save(doc);
+
+            UserPostDto userPostDto1 = UserPostDto.builder()
+                    .chaveDeAcesso("2@3456")
+                    .name("ze")
+                    .email("@sa")
+                    .cpf("3244222434")
+                    .sexo("Não binário")
+                    .profissao("Professor")
+                    .documentos(new HashSet<>())
+                    .build();
+            userPostDto1.getDocumentos().add(documento);
+            User user1 = modelMapper.map(userPostDto1, User.class);
+            userRepository.save(user1);
+            //Act
+            String responseJSONString = driver.perform(get(URI_USUARIO + "/get-docs")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .param("email", user1.getEmail()))
+                    .andExpect(status().isOk())
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            Set<Documento> documentos = objectMapper.readValue(responseJSONString, new TypeReference<>() {});
+            //Assert
+            System.out.println("documentos  :  " +  responseJSONString);
         }
     }
 }

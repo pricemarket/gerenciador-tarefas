@@ -1,7 +1,8 @@
 package com.adm.gerenciador_tarefas.controller.User;
 
 import com.adm.gerenciador_tarefas.dto.Documento.DocPostDto;
-import com.adm.gerenciador_tarefas.service.User.UserAdicionarDocumentoService;
+import com.adm.gerenciador_tarefas.model.Documento;
+import com.adm.gerenciador_tarefas.service.User.UserDocumentoService;
 import com.adm.gerenciador_tarefas.service.User.UserCrudService;
 import com.adm.gerenciador_tarefas.dto.User.UserPostDto;
 import com.adm.gerenciador_tarefas.model.User;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController  // configurando a classe para ser um controller e ela vai responder por requesições.
 @RequestMapping(value = "/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,7 +23,7 @@ public class UserController {
     private UserCrudService userCrudService;
 
     @Autowired
-    private UserAdicionarDocumentoService userAdicionarDocumentoService;
+    private UserDocumentoService userDocumentoService;
 
     @GetMapping
     public ResponseEntity<List<User>> findAll() {
@@ -30,19 +32,20 @@ public class UserController {
                 .body(userCrudService.userFindAllService());
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userCrudService.userFindyByIdService(id));
     }
+
     @PostMapping("/criar-cliente")
     public ResponseEntity<?> createUser(@RequestBody @Valid UserPostDto userPostDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userCrudService.userCreateService(userPostDto));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(
             @PathVariable Long id,
@@ -56,9 +59,16 @@ public class UserController {
 
     @PatchMapping("/add-doc")
     public ResponseEntity<?> addDoc(@RequestParam String email, @RequestBody @Valid DocPostDto docPostDto) {
-        userAdicionarDocumentoService.adicionardoc(email, docPostDto);
+        userDocumentoService.adicionardoc(email, docPostDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body("");
+    }
+
+    @GetMapping("/get-docs")
+    public ResponseEntity<Set<Documento>> findAllDocumentos(@RequestParam String email) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userDocumentoService.buscarTodosDoc(email));
     }
 }

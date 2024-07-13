@@ -1,8 +1,11 @@
 package com.adm.gerenciador_tarefas.dto.User;
 
+import com.adm.gerenciador_tarefas.model.Documento;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+
+import java.util.Set;
 
 @Builder
 @Data
@@ -24,7 +27,9 @@ public class UserPostDto {
     @JsonProperty("profissao")
     @NotBlank(message = "Profisssão deve ser obrigatório!")
     private String profissao;
-    @JsonProperty
+    @JsonProperty("sexo")
     @NotBlank(message = "Sexo deve ser obrigatório!")
     private String sexo;
+    @JsonProperty("documentos")
+    private Set<Documento> documentos;
 }
